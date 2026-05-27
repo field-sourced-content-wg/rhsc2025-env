@@ -133,7 +133,7 @@ spec:
     path: {{ .Values.gitops.basePath }}/components/checluster
     helm:
       valuesObject:
-        tackle:
+        checluster:
           enabled: {{ .Values.checluster.enabled }}
           name: {{ .Values.checluster.name }}
           namespace: {{ .Values.checluster.namespace }}
