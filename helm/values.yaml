@@ -80,6 +80,14 @@ tackle:
     # kai_llm_model is automatically set from litemaas.model
 
 # ============================================================
+# CheCluster CR - Created after operators are installed
+# ============================================================
+checluster:
+  enabled: true
+  name: devspaces
+  namespace: openshift-devspaces
+
+# ============================================================
 # Values injected by field content workload (do not modify)
 # ============================================================
 deployer:
