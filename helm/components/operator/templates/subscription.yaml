@@ -1,0 +1,32 @@
+{{- if .Values.operator.enabled }}
+{{- $existingSub := lookup "operators.coreos.com/v1alpha1" "Subscription" .Values.operator.namespace .Values.operator.name }}
+{{- if not $existingSub.metadata }}
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  name: {{ .Values.operator.name }}-og
+  namespace: {{ .Values.operator.namespace }}
+spec:
+  {{- if not .Values.operator.allNamespaces }}
+  targetNamespaces:
+    - {{ .Values.operator.namespace }}
+  {{- end }}
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: {{ .Values.operator.name }}
+  namespace: {{ .Values.operator.namespace }}
+  labels:
+    demo.redhat.com/application: {{ .Values.operator.name | quote }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  channel: {{ .Values.operator.channel }}
+  installPlanApproval: {{ .Values.operator.installPlanApproval }}
+  name: {{ .Values.operator.name }}
+  source: {{ .Values.operator.source }}
+  sourceNamespace: {{ .Values.operator.sourceNamespace }}
+{{- end }}
+{{- end }}

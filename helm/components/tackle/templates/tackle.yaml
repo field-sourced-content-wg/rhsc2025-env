@@ -1,0 +1,17 @@
+{{- if .Values.tackle.enabled }}
+---
+apiVersion: tackle.konveyor.io/v1alpha1
+kind: Tackle
+metadata:
+  name: {{ .Values.tackle.name }}
+  namespace: {{ .Values.tackle.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  feature_auth_required: {{ .Values.tackle.spec.feature_auth_required | quote }}
+  kai_llm_model: {{ .Values.litemaas.model }}
+  kai_llm_provider: {{ .Values.tackle.spec.kai_llm_provider }}
+  kai_solution_server_enabled: {{ .Values.tackle.spec.kai_solution_server_enabled }}
+{{- end }}

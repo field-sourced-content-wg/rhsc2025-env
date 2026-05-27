@@ -1,0 +1,118 @@
+# App of Apps Pattern
+# This template generates ArgoCD Applications for each enabled component
+
+{{- range $name, $config := .Values.components }}
+{{- if $config.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $.Release.Name }}-{{ $name }}
+  namespace: {{ $.Values.argocd.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $.Values.argocd.project }}
+  source:
+    repoURL: {{ $.Values.gitops.repoUrl }}
+    targetRevision: {{ $.Values.gitops.revision }}
+    path: {{ $.Values.gitops.basePath }}/components/operator
+    helm:
+      valuesObject:
+        operator:
+          enabled: {{ $config.enabled }}
+          name: {{ $config.name }}
+          namespace: {{ $config.namespace }}
+          channel: {{ $config.channel }}
+          source: {{ $config.source }}
+          sourceNamespace: {{ $config.sourceNamespace }}
+          installPlanApproval: {{ $config.installPlanApproval }}
+          {{- if $config.allNamespaces }}
+          allNamespaces: {{ $config.allNamespaces }}
+          {{- end }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $config.namespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}
+{{- end }}
+
+{{- if .Values.secrets.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-secrets
+  namespace: {{ .Values.argocd.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.argocd.project }}
+  source:
+    repoURL: {{ .Values.gitops.repoUrl }}
+    targetRevision: {{ .Values.gitops.revision }}
+    path: {{ .Values.gitops.basePath }}/components/secrets
+    helm:
+      valuesObject:
+        secrets:
+          enabled: {{ .Values.secrets.enabled }}
+          name: {{ .Values.secrets.name }}
+          namespace: {{ .Values.secrets.namespace }}
+          type: {{ .Values.secrets.type }}
+        litemaas:
+          apiKey: {{ .Values.litemaas.apiKey | quote }}
+          apiUrl: {{ .Values.litemaas.apiUrl | quote }}
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}
+
+{{- if .Values.tackle.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-tackle
+  namespace: {{ .Values.argocd.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.argocd.project }}
+  source:
+    repoURL: {{ .Values.gitops.repoUrl }}
+    targetRevision: {{ .Values.gitops.revision }}
+    path: {{ .Values.gitops.basePath }}/components/tackle
+    helm:
+      valuesObject:
+        tackle:
+          enabled: {{ .Values.tackle.enabled }}
+          name: {{ .Values.tackle.name }}
+          namespace: {{ .Values.tackle.namespace }}
+          spec: {{ toYaml .Values.tackle.spec | nindent 12 }}
+        litemaas:
+          model: {{ .Values.litemaas.model | quote }}
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}

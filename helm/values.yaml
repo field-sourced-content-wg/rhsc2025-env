@@ -1,0 +1,96 @@
+# Field Content Demo - App of Apps
+# This chart deploys multiple components as separate ArgoCD Applications
+
+# ============================================================
+# GitOps Configuration
+# ============================================================
+gitops:
+  # Repository containing the component charts
+  repoUrl: "https://github.com/field-sourced-content-wg/rhsc2025-env.git"
+  revision: "main"
+  basePath: "helm"
+
+# ArgoCD settings
+argocd:
+  namespace: openshift-gitops
+  project: default
+
+# ============================================================
+# Components - Enable/disable and configure each component
+# ============================================================
+components:
+
+  # --- Operator Installation ---
+  mta:
+    enabled: true
+    name: mta-operator
+    namespace: openshift-mta
+    channel: stable-v8.1
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    installPlanApproval: Automatic
+  cnpg:
+    enabled: true
+    name: cloudnative-pg
+    namespace: cnpg-system
+    channel: stable-v1
+    source: certified-operators
+    sourceNamespace: openshift-marketplace
+    installPlanApproval: Automatic
+  devspaces:
+    enabled: true
+    name: devspaces
+    namespace: openshift-devspaces
+    channel: stable
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    installPlanApproval: Automatic
+    allNamespaces: true  # DevWorkspace requires AllNamespaces mode
+  rhbk:
+    enabled: true
+    name: rhbk-operator
+    namespace: keycloak-operator
+    channel: stable-v26
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    installPlanApproval: Automatic
+
+# ============================================================
+# Secrets - Created after operators are installed
+# ============================================================
+secrets:
+  enabled: true
+  name: kai-api-keys
+  namespace: openshift-mta
+  type: Opaque
+  # OPENAI_API_KEY is automatically set from litemaas.apiKey
+  # OPENAI_API_BASE is automatically set from litemaas.apiUrl
+
+# ============================================================
+# Tackle CR - Created after operators are installed
+# ============================================================
+tackle:
+  enabled: true
+  name: tackle
+  namespace: openshift-mta
+  spec:
+    feature_auth_required: 'true'
+    kai_llm_provider: OpenAI
+    kai_solution_server_enabled: true
+    # kai_llm_model is automatically set from litemaas.model
+
+# ============================================================
+# Values injected by field content workload (do not modify)
+# ============================================================
+deployer:
+  domain: ""
+  apiUrl: ""
+
+fieldContent:
+  deploymentType: "helm"
+
+litemaas:
+  enabled: true  # RHDP sets this to true automatically
+  apiUrl: ""
+  apiKey: ""
+  model: ""
