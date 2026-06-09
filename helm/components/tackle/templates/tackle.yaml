@@ -11,6 +11,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "2"
 spec:
   feature_auth_required: {{ .Values.tackle.spec.feature_auth_required | quote }}
+  kai_llm_proxy_enabled: {{ .Values.tackle.spec.llm_proxy_enabled }}
   kai_llm_model: {{ .Values.litemaas.model }}
   kai_llm_provider: {{ .Values.tackle.spec.kai_llm_provider }}
   kai_solution_server_enabled: {{ .Values.tackle.spec.kai_solution_server_enabled }}
