@@ -155,7 +155,7 @@ spec:
           name: showroom-files
           subPath: repo
       - name: antora-builder
-        image: "quay.io/rhpds/antora:v1.0.1"
+        image: "quay.io/rhpds/antora:v1.2.4"
         env:
         - name: FILES_DIR
           value: "/showroom/repo"
