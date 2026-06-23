@@ -54,7 +54,7 @@ operators:
     source: redhat-operators
     sourceNamespace: openshift-marketplace
     installPlanApproval: Automatic
-  webterminal
+  webterminal:
     enabled: true
     name: web-terminal
     namespace: openshift-operators
