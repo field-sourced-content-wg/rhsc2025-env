@@ -54,6 +54,14 @@ operators:
     source: redhat-operators
     sourceNamespace: openshift-marketplace
     installPlanApproval: Automatic
+  webterminal
+    enabled: true
+    name: web-terminal
+    namespace: openshift-operators
+    channel: fast
+    source: redhat-operators
+    sourceNamespace: openshift-marketplace
+    installPlanApproval: Automatic
 
 # --- Showroom Lab Guide ---
 showroom:
