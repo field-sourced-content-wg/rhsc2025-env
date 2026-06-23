@@ -190,8 +190,8 @@ spec:
         deployer:
           domain: {{ .Values.deployer.domain | quote }}
         demo:
-          namespace: {{ .Values.helloWorld.namespace }}
-          appName: {{ .Values.helloWorld.appName }}
+          namespace: "demo-namespace"
+          appName: "demo-appname"
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .Values.showroom.namespace }}
