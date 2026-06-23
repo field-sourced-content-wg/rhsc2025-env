@@ -57,7 +57,7 @@ operators:
   webterminal:
     enabled: true
     name: web-terminal
-    namespace: openshift-operators
+    namespace: openshift-webterminal
     channel: fast
     source: redhat-operators
     sourceNamespace: openshift-marketplace
