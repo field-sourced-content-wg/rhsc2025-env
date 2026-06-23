@@ -1,7 +1,7 @@
 # App of Apps Pattern
 # This template generates ArgoCD Applications for each enabled component
 
-{{- range $name, $config := .Values.components }}
+{{- range $name, $config := .Values.operators }}
 {{- if $config.enabled }}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -139,6 +139,62 @@ spec:
           namespace: {{ .Values.checluster.namespace }}
   destination:
     server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}
+{{- if .Values.showroom.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-showroom
+  namespace: {{ .Values.argocd.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.argocd.project }}
+  source:
+    repoURL: {{ .Values.gitops.repoUrl }}
+    targetRevision: {{ .Values.gitops.revision }}
+    path: {{ .Values.gitops.basePath }}/components/showroom
+    helm:
+      valuesObject:
+        showroom:
+          enabled: {{ .Values.showroom.enabled }}
+          namespace: {{ .Values.showroom.namespace }}
+          name: {{ .Values.showroom.name }}
+          content:
+            repoUrl: {{ .Values.showroom.content.repoUrl | quote }}
+            repoRef: {{ .Values.showroom.content.repoRef | quote }}
+            antoraPlaybook: {{ .Values.showroom.content.antoraPlaybook | quote }}
+            image: {{ .Values.showroom.content.image | quote }}
+          nookbag:
+            enabled: {{ .Values.showroom.nookbag.enabled }}
+            bundleUrl: {{ .Values.showroom.nookbag.bundleUrl | quote }}
+          terminal:
+            enabled: {{ .Values.showroom.terminal.enabled }}
+            image: {{ .Values.showroom.terminal.image | quote }}
+            resources:
+              requests:
+                cpu: {{ .Values.showroom.terminal.resources.requests.cpu | quote }}
+                memory: {{ .Values.showroom.terminal.resources.requests.memory | quote }}
+              limits:
+                cpu: {{ .Values.showroom.terminal.resources.limits.cpu | quote }}
+                memory: {{ .Values.showroom.terminal.resources.limits.memory | quote }}
+        deployer:
+          domain: {{ .Values.deployer.domain | quote }}
+        demo:
+          namespace: {{ .Values.helloWorld.namespace }}
+          appName: {{ .Values.helloWorld.appName }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.showroom.namespace }}
   syncPolicy:
     automated:
       prune: true
