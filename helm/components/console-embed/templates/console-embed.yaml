@@ -1,0 +1,10 @@
+{{- if .Values.consoleEmbed.enabled }}
+---
+apiVersion: operator.openshift.io/v1
+kind: Console
+metadata:
+  name: cluster
+spec:
+  unsupportedConfigOverrides:
+    contentSecurityPolicy: ""
+{{- end }}
