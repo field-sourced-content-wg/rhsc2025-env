@@ -6,5 +6,5 @@ metadata:
   name: cluster
 spec:
   unsupportedConfigOverrides:
-    contentSecurityPolicy: ""
+    contentSecurityPolicyEnabled: false
 {{- end }}
