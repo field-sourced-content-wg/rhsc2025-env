@@ -167,6 +167,8 @@ spec:
       valuesObject:
         consoleEmbed:
           enabled: {{ .Values.consoleEmbed.enabled }}
+        deployer:
+          domain: {{ .Values.deployer.domain | quote }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
@@ -174,7 +176,7 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - ServerSideApply=true
+      - CreateNamespace=true
 {{- end }}
 {{- if .Values.showroom.enabled }}
 ---

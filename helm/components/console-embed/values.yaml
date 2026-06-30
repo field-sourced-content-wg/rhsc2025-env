@@ -1,2 +1,5 @@
 consoleEmbed:
   enabled: true
+
+deployer:
+  domain: ""

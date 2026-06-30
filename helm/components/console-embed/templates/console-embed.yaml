@@ -1,10 +1,32 @@
 {{- if .Values.consoleEmbed.enabled }}
 ---
-apiVersion: operator.openshift.io/v1
-kind: Console
+apiVersion: route.openshift.io/v1
+kind: Route
 metadata:
-  name: cluster
+  name: console-embed
+  namespace: openshift-console
 spec:
-  unsupportedConfigOverrides:
-    contentSecurityPolicyEnabled: false
+  host: console-embed-openshift-console.{{ .Values.deployer.domain }}
+  port:
+    targetPort: https
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: reencrypt
+  to:
+    kind: Service
+    name: console
+    weight: 100
+  wildcardPolicy: None
+  httpHeaders:
+    actions:
+      response:
+      - name: X-Frame-Options
+        action:
+          type: Delete
+      - name: Content-Security-Policy
+        action:
+          type: Delete
+      - name: Content-Security-Policy-Report-Only
+        action:
+          type: Delete
 {{- end }}
