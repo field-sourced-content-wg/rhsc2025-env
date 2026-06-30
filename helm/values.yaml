@@ -92,6 +92,12 @@ showroom:
         memory: "1Gi"
 
 # ============================================================
+# Console Embed - Allow iframe embedding in Showroom
+# ============================================================
+consoleEmbed:
+  enabled: true
+
+# ============================================================
 # Secrets - Created after operators are installed
 # ============================================================
 secrets:

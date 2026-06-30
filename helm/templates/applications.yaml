@@ -146,6 +146,36 @@ spec:
     syncOptions:
       - CreateNamespace=true
 {{- end }}
+{{- if .Values.consoleEmbed.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-console-embed
+  namespace: {{ .Values.argocd.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.argocd.project }}
+  source:
+    repoURL: {{ .Values.gitops.repoUrl }}
+    targetRevision: {{ .Values.gitops.revision }}
+    path: {{ .Values.gitops.basePath }}/components/console-embed
+    helm:
+      valuesObject:
+        consoleEmbed:
+          enabled: {{ .Values.consoleEmbed.enabled }}
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+{{- end }}
 {{- if .Values.showroom.enabled }}
 ---
 apiVersion: argoproj.io/v1alpha1
