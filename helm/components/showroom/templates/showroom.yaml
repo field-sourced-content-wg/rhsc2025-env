@@ -90,6 +90,15 @@ data:
     cluster_domain: {{ .Values.deployer.domain }}
     demo_namespace: {{ .Values.demo.namespace }}
     demo_app: {{ .Values.demo.appName }}
+    openshift_console_url: https://console.apps.cluster.example.com
+    keycloak_admin_user: admin
+    users:
+      user1:
+        bastion_ssh_password: password1
+        some_credential: value1
+      user2:
+        bastion_ssh_password: password2
+        some_credential: value2
 ---
 # Showroom PVC
 apiVersion: v1
