@@ -1,0 +1,32 @@
+{{- if .Values.users.enabled }}
+{{- range $i := until (int .Values.users.count) }}
+{{- $username := printf "%s%d" $.Values.users.prefix (add1 $i) }}
+---
+apiVersion: user.openshift.io/v1
+kind: User
+metadata:
+  name: {{ $username }}
+  labels:
+    demo.redhat.com/application: "field-content"
+    demo.redhat.com/workshop-user: "true"
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+identities:
+- workshop-users-htpasswd:{{ $username }}
+---
+apiVersion: user.openshift.io/v1
+kind: Identity
+metadata:
+  name: workshop-users-htpasswd:{{ $username }}
+  labels:
+    demo.redhat.com/application: "field-content"
+    demo.redhat.com/workshop-user: "true"
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+providerName: workshop-users-htpasswd
+providerUserName: {{ $username }}
+user:
+  name: {{ $username }}
+  uid: ""
+{{- end }}
+{{- end }}

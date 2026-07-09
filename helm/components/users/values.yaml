@@ -1,0 +1,8 @@
+# Default values for workshop users component
+users:
+  enabled: true
+  count: 20
+  prefix: "user"
+  password: "openshift"
+  devspacesAccess: true
+  mtaAccess: true

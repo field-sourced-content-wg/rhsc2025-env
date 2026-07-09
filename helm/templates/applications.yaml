@@ -234,3 +234,38 @@ spec:
     syncOptions:
       - CreateNamespace=true
 {{- end }}
+{{- if .Values.users.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Release.Name }}-users
+  namespace: {{ .Values.argocd.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ .Values.argocd.project }}
+  source:
+    repoURL: {{ .Values.gitops.repoUrl }}
+    targetRevision: {{ .Values.gitops.revision }}
+    path: {{ .Values.gitops.basePath }}/components/users
+    helm:
+      valuesObject:
+        users:
+          enabled: {{ .Values.users.enabled }}
+          count: {{ .Values.users.count }}
+          prefix: {{ .Values.users.prefix | quote }}
+          password: {{ .Values.users.password | quote }}
+          devspacesAccess: {{ .Values.users.devspacesAccess }}
+          mtaAccess: {{ .Values.users.mtaAccess }}
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+{{- end }}

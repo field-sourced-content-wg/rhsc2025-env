@@ -131,6 +131,22 @@ checluster:
   namespace: openshift-devspaces
 
 # ============================================================
+# Workshop Users - DevSpaces and MTA access enabled
+# ============================================================
+users:
+  enabled: true
+  # Number of workshop users to create (user1, user2, ..., userN)
+  count: 10
+  # Username prefix
+  prefix: "user"
+  # Password for all users (consider changing for production)
+  password: "openshift"
+  # Grant DevSpaces access to each user
+  devspacesAccess: true
+  # Grant MTA (Tackle) view access to each user
+  mtaAccess: true
+
+# ============================================================
 # Values injected by field content workload (do not modify)
 # ============================================================
 deployer:
