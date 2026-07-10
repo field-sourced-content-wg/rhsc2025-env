@@ -6,3 +6,11 @@ users:
   password: "openshift"
   devspacesAccess: true
   mtaAccess: true
+  # OAuth management - WARNING: Enabling this will replace the entire OAuth config
+  # Set to false to only create HTPasswd secret without modifying OAuth
+  manageOAuth: false
+  # Admin user configuration
+  admin:
+    enabled: true
+    username: "admin"
+    password: "openshift"

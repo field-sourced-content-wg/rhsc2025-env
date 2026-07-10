@@ -1,4 +1,4 @@
-{{- if .Values.users.enabled }}
+{{- if and .Values.users.enabled .Values.users.manageOAuth }}
 ---
 apiVersion: config.openshift.io/v1
 kind: OAuth

@@ -260,6 +260,11 @@ spec:
           password: {{ .Values.users.password | quote }}
           devspacesAccess: {{ .Values.users.devspacesAccess }}
           mtaAccess: {{ .Values.users.mtaAccess }}
+          manageOAuth: {{ .Values.users.manageOAuth }}
+          admin:
+            enabled: {{ .Values.users.admin.enabled }}
+            username: {{ .Values.users.admin.username | quote }}
+            password: {{ .Values.users.admin.password | quote }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

@@ -145,6 +145,15 @@ users:
   devspacesAccess: true
   # Grant MTA (Tackle) view access to each user
   mtaAccess: true
+  # OAuth management - WARNING: Enabling this will replace the entire OAuth config
+  # Set to false to only create HTPasswd secret without modifying OAuth
+  # You must manually configure OAuth to use the workshop-users-htpasswd secret
+  manageOAuth: false
+  # Admin user configuration
+  admin:
+    enabled: true
+    username: "admin"
+    password: "openshift"
 
 # ============================================================
 # Values injected by field content workload (do not modify)

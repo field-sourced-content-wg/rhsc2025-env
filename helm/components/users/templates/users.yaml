@@ -1,4 +1,36 @@
 {{- if .Values.users.enabled }}
+
+{{- if .Values.users.admin.enabled }}
+# Admin user
+---
+apiVersion: user.openshift.io/v1
+kind: User
+metadata:
+  name: {{ .Values.users.admin.username }}
+  labels:
+    demo.redhat.com/application: "field-content"
+    demo.redhat.com/admin-user: "true"
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+identities:
+- workshop-users-htpasswd:{{ .Values.users.admin.username }}
+---
+apiVersion: user.openshift.io/v1
+kind: Identity
+metadata:
+  name: workshop-users-htpasswd:{{ .Values.users.admin.username }}
+  labels:
+    demo.redhat.com/application: "field-content"
+    demo.redhat.com/admin-user: "true"
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+providerName: workshop-users-htpasswd
+providerUserName: {{ .Values.users.admin.username }}
+user:
+  name: {{ .Values.users.admin.username }}
+  uid: ""
+{{- end }}
+
 {{- range $i := until (int .Values.users.count) }}
 {{- $username := printf "%s%d" $.Values.users.prefix (add1 $i) }}
 ---
