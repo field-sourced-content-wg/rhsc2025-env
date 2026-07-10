@@ -136,7 +136,7 @@ checluster:
 users:
   enabled: true
   # Number of workshop users to create (user1, user2, ..., userN)
-  count: 10
+  count: 6
   # Username prefix
   prefix: "user"
   # Password for all users (consider changing for production)
