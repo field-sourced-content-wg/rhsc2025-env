@@ -12,22 +12,6 @@ metadata:
     demo.redhat.com/admin-user: "true"
   annotations:
     argocd.argoproj.io/sync-wave: "3"
-identities:
-- workshop-users-htpasswd:{{ .Values.users.admin.username }}
----
-apiVersion: user.openshift.io/v1
-kind: Identity
-metadata:
-  name: workshop-users-htpasswd:{{ .Values.users.admin.username }}
-  labels:
-    demo.redhat.com/application: "field-content"
-    demo.redhat.com/admin-user: "true"
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
-providerName: workshop-users-htpasswd
-providerUserName: {{ .Values.users.admin.username }}
-user:
-  name: {{ .Values.users.admin.username }}
 {{- end }}
 
 {{- range $i := until (int .Values.users.count) }}
@@ -42,21 +26,5 @@ metadata:
     demo.redhat.com/workshop-user: "true"
   annotations:
     argocd.argoproj.io/sync-wave: "3"
-identities:
-- workshop-users-htpasswd:{{ $username }}
----
-apiVersion: user.openshift.io/v1
-kind: Identity
-metadata:
-  name: workshop-users-htpasswd:{{ $username }}
-  labels:
-    demo.redhat.com/application: "field-content"
-    demo.redhat.com/workshop-user: "true"
-  annotations:
-    argocd.argoproj.io/sync-wave: "3"
-providerName: workshop-users-htpasswd
-providerUserName: {{ $username }}
-user:
-  name: {{ $username }}
 {{- end }}
 {{- end }}
