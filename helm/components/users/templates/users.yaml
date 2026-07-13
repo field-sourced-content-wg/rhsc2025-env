@@ -28,7 +28,6 @@ providerName: workshop-users-htpasswd
 providerUserName: {{ .Values.users.admin.username }}
 user:
   name: {{ .Values.users.admin.username }}
-  uid: ""
 {{- end }}
 
 {{- range $i := until (int .Values.users.count) }}
@@ -59,6 +58,5 @@ providerName: workshop-users-htpasswd
 providerUserName: {{ $username }}
 user:
   name: {{ $username }}
-  uid: ""
 {{- end }}
 {{- end }}
