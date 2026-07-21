@@ -29,7 +29,7 @@ showroom:
         memory: "1Gi"
 
   # Extra keys merged into userdata ConfigMap (user_data.yml)
-  # Core keys (cluster_domain, demo_namespace, demo_app) are set by the template.
+  # Core keys (cluster_domain, demo_*, maas_*) are set by the template.
   userData: {}
 
 # Injected by parent chart
@@ -40,3 +40,9 @@ deployer:
 demo:
   namespace: ""
   appName: ""
+
+litemaas:
+  apiUrl: ""
+  apiKey: ""
+  model: ""
+
