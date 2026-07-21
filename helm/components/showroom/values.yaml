@@ -41,7 +41,9 @@ demo:
   namespace: ""
   appName: ""
 
+# Injected by parent chart (via applications.yaml)
 litemaas:
   apiUrl: ""
   apiKey: ""
   model: ""
+

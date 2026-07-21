@@ -226,6 +226,10 @@ spec:
         demo:
           namespace: "demo-namespace"
           appName: "demo-appname"
+        litemaas:
+          apiKey: {{ .Values.litemaas.apiKey | quote }}
+          apiUrl: {{ .Values.litemaas.apiUrl | quote }}
+          model: {{ .Values.litemaas.model | quote }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ .Values.showroom.namespace }}
