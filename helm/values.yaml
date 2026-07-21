@@ -90,6 +90,11 @@ showroom:
       limits:
         cpu: "500m"
         memory: "1Gi"
+  # Extra keys merged into userdata ConfigMap (user_data.yml)
+  userData:
+    maas_api_key: "{{ .Values.litemaas.apiKey }}"
+    maas_api_url: "{{ .Values.litemaas.apiUrl }}"
+    maas_model: "{{ .Values.litemaas.model }}"
 
 # ============================================================
 # Console Embed - Allow iframe embedding in Showroom

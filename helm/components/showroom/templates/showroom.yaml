@@ -90,6 +90,9 @@ data:
     cluster_domain: {{ .Values.deployer.domain }}
     demo_namespace: {{ .Values.demo.namespace }}
     demo_app: {{ .Values.demo.appName }}
+    {{- range $k, $v := .Values.showroom.userData | default dict }}
+    {{ $k }}: {{ $v }}
+    {{- end }}
 ---
 # Showroom PVC
 apiVersion: v1

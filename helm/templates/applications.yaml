@@ -219,6 +219,8 @@ spec:
               limits:
                 cpu: {{ .Values.showroom.terminal.resources.limits.cpu | quote }}
                 memory: {{ .Values.showroom.terminal.resources.limits.memory | quote }}
+          userData:
+            {{- toYaml (.Values.showroom.userData | default dict) | nindent 12 }}
         deployer:
           domain: {{ .Values.deployer.domain | quote }}
         demo:
