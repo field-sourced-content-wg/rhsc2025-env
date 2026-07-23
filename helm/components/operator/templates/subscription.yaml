@@ -8,7 +8,9 @@ metadata:
   name: {{ .Values.operator.name }}-og
   namespace: {{ .Values.operator.namespace }}
 spec:
-  {{- if not .Values.operator.allNamespaces }}
+  {{- if .Values.operator.allNamespaces }}
+  upgradeStrategy: Default
+  {{- else }}
   targetNamespaces:
     - {{ .Values.operator.namespace }}
   {{- end }}
