@@ -1,0 +1,52 @@
+---
+- name: MTA Workshop Post-Deploy Configuration
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - vars/main.yml
+
+  pre_tasks:
+    - name: Verify oc login
+      command: oc whoami
+      register: oc_user
+      changed_when: false
+
+    - name: Display current user
+      debug:
+        msg: "Logged in as: {{ oc_user.stdout }}"
+
+    - name: Auto-detect cluster domain
+      command: oc get ingresses.config.openshift.io cluster -o jsonpath='{.spec.domain}'
+      register: detected_domain
+      changed_when: false
+      when: cluster_domain == ""
+
+    - name: Set cluster domain
+      set_fact:
+        cluster_domain: "{{ detected_domain.stdout }}"
+      when: cluster_domain == ""
+
+    - name: Display cluster domain
+      debug:
+        msg: "Cluster domain: {{ cluster_domain }}"
+
+  roles:
+    - role: wait-for-operators
+    - role: wait-for-resources
+    - role: configure-mta-keycloak
+    - role: validate-deployment
+
+  post_tasks:
+    - name: Post-Deploy Summary
+      debug:
+        msg: |
+          ============================================
+          MTA Workshop Post-Deploy Complete
+          ============================================
+          MTA UI:      https://mta-{{ mta_namespace }}.{{ cluster_domain }}
+          Dev Spaces:  https://devspaces.{{ cluster_domain }}
+          ============================================
+          MTA Login:   admin / {{ mta_admin_password }}
+          ============================================

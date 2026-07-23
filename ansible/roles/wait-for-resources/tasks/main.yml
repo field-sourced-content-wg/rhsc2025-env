@@ -1,0 +1,20 @@
+---
+- name: Wait for ArgoCD Applications to be Synced/Healthy
+  shell: >
+    oc get applications.argoproj.io -n {{ argocd_namespace }}
+    -o jsonpath='{range .items[*]}{.metadata.name}{" "}{.status.sync.status}{" "}{.status.health.status}{"\n"}{end}'
+    | grep -v "Synced Healthy" | grep -v "^$" | wc -l | tr -d ' '
+  register: unhealthy_apps
+  until: unhealthy_apps.stdout == "0"
+  retries: "{{ (resource_wait_timeout | int / resource_wait_interval | int) | int }}"
+  delay: "{{ resource_wait_interval }}"
+  changed_when: false
+
+- name: Display ArgoCD Application status
+  command: oc get applications.argoproj.io -n {{ argocd_namespace }}
+  register: app_status
+  changed_when: false
+
+- name: Show ArgoCD results
+  debug:
+    msg: "{{ app_status.stdout_lines }}"

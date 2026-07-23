@@ -1,0 +1,80 @@
+---
+- name: Get MTA Keycloak admin password from Secret
+  shell: >
+    oc get secret credential-mta-rhsso -n {{ mta_namespace }}
+    -o jsonpath='{.data.ADMIN_PASSWORD}' | base64 -d
+  register: keycloak_admin_pw
+  changed_when: false
+
+- name: Login to MTA Keycloak
+  command: >
+    oc exec -n {{ mta_namespace }} {{ mta_keycloak_pod }} --
+    {{ mta_keycloak_cli }} config credentials
+    --server http://localhost:8080/auth
+    --realm master
+    --user admin
+    --password "{{ keycloak_admin_pw.stdout }}"
+  changed_when: false
+
+- name: Wait for MTA realm to be created
+  command: >
+    oc exec -n {{ mta_namespace }} {{ mta_keycloak_pod }} --
+    {{ mta_keycloak_cli }} get realms/{{ mta_keycloak_realm }}
+    --fields realm
+  register: realm_check
+  until: realm_check.rc == 0
+  retries: 40
+  delay: 15
+  changed_when: false
+
+- name: Check if admin user exists in MTA realm
+  command: >
+    oc exec -n {{ mta_namespace }} {{ mta_keycloak_pod }} --
+    {{ mta_keycloak_cli }} get users -r {{ mta_keycloak_realm }}
+    --fields username,requiredActions
+  register: mta_users
+  changed_when: false
+
+- name: Get admin user ID
+  command: >
+    oc exec -n {{ mta_namespace }} {{ mta_keycloak_pod }} --
+    {{ mta_keycloak_cli }} get users -r {{ mta_keycloak_realm }}
+    -q username=admin --fields id
+    --format csv --noquotes
+  register: admin_user_id
+  changed_when: false
+
+- name: Set admin password
+  command: >
+    oc exec -n {{ mta_namespace }} {{ mta_keycloak_pod }} --
+    {{ mta_keycloak_cli }} set-password
+    -r {{ mta_keycloak_realm }}
+    --username admin
+    --new-password "{{ mta_admin_password }}"
+  register: set_pw_result
+  changed_when: "'error' not in set_pw_result.stderr | default('')"
+
+- name: Remove requiredActions (UPDATE_PASSWORD)
+  command: >
+    oc exec -n {{ mta_namespace }} {{ mta_keycloak_pod }} --
+    {{ mta_keycloak_cli }} update users/{{ admin_user_id.stdout_lines[-1] }}
+    -r {{ mta_keycloak_realm }}
+    -s 'requiredActions=[]'
+  when: admin_user_id.stdout_lines | length > 0
+  changed_when: true
+
+- name: Verify admin login with new password
+  shell: >
+    curl -sk -X POST
+    https://mta-{{ mta_namespace }}.{{ cluster_domain }}/auth/realms/{{ mta_keycloak_realm }}/protocol/openid-connect/token
+    -d "client_id=mta-ui"
+    -d "username=admin"
+    -d "password={{ mta_admin_password }}"
+    -d "grant_type=password"
+    | python3 -c "import sys,json; d=json.load(sys.stdin); print('OK' if 'access_token' in d else 'FAIL: ' + d.get('error','unknown'))"
+  register: login_test
+  changed_when: false
+
+- name: Display login test result
+  debug:
+    msg: "MTA Keycloak admin login: {{ login_test.stdout }}"
