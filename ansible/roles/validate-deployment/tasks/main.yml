@@ -1,0 +1,65 @@
+---
+- name: Check MTA UI accessibility
+  uri:
+    url: "https://mta-{{ mta_namespace }}.{{ cluster_domain }}"
+    validate_certs: false
+    status_code: 200
+  register: mta_ui_check
+
+- name: Check Dev Spaces accessibility
+  uri:
+    url: "https://devspaces.{{ cluster_domain }}"
+    validate_certs: false
+    status_code: 200
+  register: devspaces_check
+
+- name: Check OpenShift Console accessibility
+  uri:
+    url: "https://console-openshift-console.{{ cluster_domain }}"
+    validate_certs: false
+    status_code: 200
+  register: console_check
+
+- name: Check MTA OpenID Connect endpoint
+  uri:
+    url: "https://mta-{{ mta_namespace }}.{{ cluster_domain }}/auth/realms/{{ mta_keycloak_realm }}/.well-known/openid-configuration"
+    validate_certs: false
+    status_code: 200
+  register: oidc_check
+
+- name: Get OAuth token from MTA Keycloak
+  uri:
+    url: "https://mta-{{ mta_namespace }}.{{ cluster_domain }}/auth/realms/{{ mta_keycloak_realm }}/protocol/openid-connect/token"
+    method: POST
+    validate_certs: false
+    body_format: form-urlencoded
+    body:
+      client_id: mta-ui
+      username: admin
+      password: "{{ mta_admin_password }}"
+      grant_type: password
+    status_code: 200
+  register: token_response
+
+- name: Test MTA Hub API with token
+  uri:
+    url: "https://mta-{{ mta_namespace }}.{{ cluster_domain }}/hub/applications"
+    validate_certs: false
+    headers:
+      Authorization: "Bearer {{ token_response.json.access_token }}"
+    status_code: 200
+  register: hub_api_check
+
+- name: Validation Summary
+  debug:
+    msg: |
+      ============================================
+      Deployment Validation Results
+      ============================================
+      MTA UI:           {{ 'OK' if mta_ui_check.status == 200 else 'FAIL' }}
+      Dev Spaces:       {{ 'OK' if devspaces_check.status == 200 else 'FAIL' }}
+      OpenShift Console:{{ 'OK' if console_check.status == 200 else 'FAIL' }}
+      OIDC Endpoint:    {{ 'OK' if oidc_check.status == 200 else 'FAIL' }}
+      OAuth Token:      {{ 'OK' if token_response.status == 200 else 'FAIL' }}
+      Hub API:          {{ 'OK' if hub_api_check.status == 200 else 'FAIL' }}
+      ============================================
