@@ -2,4 +2,4 @@
 cnpg-operator
 devspaces
 keycloak-operator
-mta-operator
+konveyor-operator

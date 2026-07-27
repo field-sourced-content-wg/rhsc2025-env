@@ -21,12 +21,12 @@ argocd:
 operators:
 
   # --- Operator Installation ---
-  mta:
+  konveyor:
     enabled: true
-    name: mta-operator
-    namespace: openshift-mta
-    channel: stable-v8.1
-    source: redhat-operators
+    name: konveyor-operator
+    namespace: konveyor-tackle
+    channel: konveyor-0.9
+    source: community-operators
     sourceNamespace: openshift-marketplace
     installPlanApproval: Automatic
   cnpg:
@@ -108,7 +108,7 @@ consoleEmbed:
 secrets:
   enabled: true
   name: kai-api-keys
-  namespace: openshift-mta
+  namespace: konveyor-tackle
   type: Opaque
   # OPENAI_API_KEY is automatically set from litemaas.apiKey
   # OPENAI_API_BASE is automatically set from litemaas.apiUrl
@@ -119,7 +119,7 @@ secrets:
 tackle:
   enabled: true
   name: tackle
-  namespace: openshift-mta
+  namespace: konveyor-tackle
   spec:
     feature_auth_required: 'true'
     llm_proxy_enabled: true
@@ -140,7 +140,7 @@ checluster:
 # ============================================================
 postgresCluster:
   enabled: false
-  name: mta-postgres
+  name: konveyor-postgres
   namespace: database
   instances: 3
   storageSize: "10Gi"
