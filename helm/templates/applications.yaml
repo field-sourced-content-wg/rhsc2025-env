@@ -107,6 +107,7 @@ spec:
           spec: {{ toYaml .Values.tackle.spec | nindent 12 }}
         litemaas:
           model: {{ .Values.litemaas.model | quote }}
+          apiUrl: {{ .Values.litemaas.apiUrl | quote }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

@@ -126,6 +126,7 @@ tackle:
     kai_llm_provider: openai
     kai_solution_server_enabled: true
     # kai_llm_model is automatically set from litemaas.model
+    # kai_llm_baseurl is automatically set from litemaas.apiUrl
 
 # ============================================================
 # CheCluster CR - Created after operators are installed

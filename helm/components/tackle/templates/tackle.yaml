@@ -14,5 +14,6 @@ spec:
   kai_llm_proxy_enabled: {{ .Values.tackle.spec.llm_proxy_enabled }}
   kai_llm_model: {{ .Values.litemaas.model }}
   kai_llm_provider: {{ .Values.tackle.spec.kai_llm_provider }}
+  kai_llm_baseurl: {{ .Values.litemaas.apiUrl | quote }}
   kai_solution_server_enabled: {{ .Values.tackle.spec.kai_solution_server_enabled }}
 {{- end }}
