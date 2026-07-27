@@ -1,0 +1,43 @@
+# MTA Workshop Post-Deploy Configuration
+# クラスタに合わせて値を変更してください
+
+# クラスタ情報（oc login 済みであること）
+cluster_domain: ""  # 空のままで OK — Playbook が自動検出します
+
+# MTA 設定
+mta_namespace: openshift-mta
+mta_admin_password: <SET_YOUR_PASSWORD>
+mta_keycloak_pod: keycloak-0
+mta_keycloak_cli: /opt/eap/bin/kcadm.sh
+mta_keycloak_realm: mta
+
+# Dev Spaces 設定
+devspaces_namespace: openshift-devspaces
+
+# ArgoCD 設定
+argocd_namespace: openshift-gitops
+
+# Operator 一覧（起動待ち対象）
+operators:
+  - name: rhbk-operator
+    namespace: keycloak-operator
+  - name: cloudnative-pg
+    namespace: cnpg-system
+  - name: mta-operator
+    namespace: openshift-mta
+  - name: devspaces
+    namespace: openshift-devspaces
+  - name: web-terminal
+    namespace: openshift-webterminal
+
+# CR 待ち対象
+custom_resources:
+  - kind: Tackle
+    name: tackle
+    namespace: openshift-mta
+
+# タイムアウト（秒）
+operator_wait_timeout: 600
+operator_wait_interval: 15
+resource_wait_timeout: 600
+resource_wait_interval: 15

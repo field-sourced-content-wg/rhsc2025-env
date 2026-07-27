@@ -1,0 +1,32 @@
+---
+- name: "Wait for Operator CSV: {{ item.name }}"
+  shell: >
+    oc get csv -n {{ item.namespace }}
+    -o jsonpath='{.items[?(@.spec.displayName)].status.phase}'
+    2>/dev/null | grep -q Succeeded
+  register: csv_result
+  until: csv_result.rc == 0
+  retries: "{{ (operator_wait_timeout | int / operator_wait_interval | int) | int }}"
+  delay: "{{ operator_wait_interval }}"
+  changed_when: false
+  loop: "{{ operators }}"
+  loop_control:
+    label: "{{ item.name }} ({{ item.namespace }})"
+
+- name: Display Operator status
+  command: >
+    oc get csv -n {{ item.namespace }}
+    -o custom-columns=NAME:.metadata.name,PHASE:.status.phase
+    --no-headers
+  register: csv_status
+  changed_when: false
+  loop: "{{ operators }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Show Operator results
+  debug:
+    msg: "{{ item.stdout_lines }}"
+  loop: "{{ csv_status.results }}"
+  loop_control:
+    label: "{{ item.item.name }}"
