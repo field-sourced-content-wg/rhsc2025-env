@@ -25,7 +25,8 @@ operators:
     enabled: true
     name: konveyor-operator
     namespace: konveyor-tackle
-    channel: konveyor-0.9
+    # community-operators: 0.10.x (Hub-native auth; needed for VS Code extension 0.6.x) is only on alpha
+    channel: alpha
     source: community-operators
     sourceNamespace: openshift-marketplace
     installPlanApproval: Automatic
