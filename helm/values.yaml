@@ -37,6 +37,7 @@ operators:
     source: certified-operators
     sourceNamespace: openshift-marketplace
     installPlanApproval: Automatic
+    allNamespaces: true  # Required for CR in database namespace
   devspaces:
     enabled: true
     name: devspaces
@@ -133,6 +134,16 @@ checluster:
   enabled: true
   name: devspaces
   namespace: openshift-devspaces
+
+# ============================================================
+# PostgreSQL Cluster CR - Created after CNPG operator is installed
+# ============================================================
+postgresCluster:
+  enabled: false
+  name: mta-postgres
+  namespace: database
+  instances: 3
+  storageSize: "10Gi"
 
 # ============================================================
 # Values injected by field content workload (do not modify)

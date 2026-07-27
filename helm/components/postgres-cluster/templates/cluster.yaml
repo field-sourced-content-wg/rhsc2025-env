@@ -1,0 +1,31 @@
+{{- if .Values.postgresCluster.enabled }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.postgresCluster.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.postgresCluster.name }}
+  namespace: {{ .Values.postgresCluster.namespace }}
+  labels:
+    demo.redhat.com/application: "field-content"
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  instances: {{ .Values.postgresCluster.instances }}
+  storage:
+    size: {{ .Values.postgresCluster.storageSize }}
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      max_connections: "100"
+  bootstrap:
+    initdb:
+      database: app
+      owner: app
+{{- end }}
