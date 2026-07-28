@@ -25,7 +25,7 @@ operators:
     enabled: true
     name: mta-operator
     namespace: openshift-mta
-    channel: stable-v8.1
+    channel: stable-v8.2
     source: redhat-operators
     sourceNamespace: openshift-marketplace
     installPlanApproval: Automatic
