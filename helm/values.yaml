@@ -123,7 +123,7 @@ tackle:
   spec:
     feature_auth_required: 'true'
     llm_proxy_enabled: true
-    kai_llm_provider: OpenAI
+    kai_llm_provider: openai
     kai_solution_server_enabled: true
     # kai_llm_model is automatically set from litemaas.model
 
